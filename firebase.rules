@@ -1,0 +1,74 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid",
+        "uid": { ".validate": "newData.val() == $uid" },
+        "email": { ".validate": "newData.isString()" },
+        "username": { ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 20" },
+        "avatar": { ".validate": "newData.isString() && (newData.val() == 'dealer' || newData.val() == 'ace' || newData.val() == 'queen' || newData.val() == 'chip' || newData.val() == 'star')" },
+        "balance": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "totalWins": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "totalLosses": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "totalGames": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "currentRoom": { ".validate": "newData.val() == null || newData.isString()" },
+        "$other": { ".validate": true }
+      }
+    },
+    "transactions": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        "$txid": {
+          ".write": "auth != null && auth.uid == $uid",
+          ".validate": "newData.hasChildren(['type','amount','balanceAfter','date']) && newData.child('type').isString() && newData.child('amount').isNumber() && newData.child('balanceAfter').isNumber() && newData.child('balanceAfter').val() >= 0"
+        }
+      }
+    },
+    "matches": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        "$matchid": {
+          ".write": "auth != null && auth.uid == $uid",
+          ".validate": "newData.hasChildren(['game','result','delta','date']) && newData.child('game').isString() && newData.child('result').isString() && newData.child('delta').isNumber()"
+        }
+      }
+    },
+    "presence": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid",
+        ".validate": "newData.hasChild('online') && newData.child('online').isBoolean()"
+      }
+    },
+    "rooms": {
+      ".read": "auth != null",
+      "$roomId": {
+        ".write": "auth != null && ((!data.exists() && newData.child('hostId').val() == auth.uid && newData.child('players').child(auth.uid).exists()) || (data.exists() && (newData.child('players').child(auth.uid).exists() || data.child('players').child(auth.uid).exists() || data.child('hostId').val() == auth.uid)))",
+        "bet": { ".validate": "newData.isNumber() && newData.val() >= 10" },
+        "maxPlayers": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 4" },
+        "pot": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "status": { ".validate": "newData.isString() && (newData.val() == 'waiting' || newData.val() == 'starting' || newData.val() == 'playing' || newData.val() == 'ended')" },
+        "players": {
+          "$uid": {
+            ".write": "auth != null && auth.uid == $uid",
+            ".validate": "newData.val() == null || (newData.child('uid').val() == $uid && newData.child('username').isString() && newData.child('ready').isBoolean())"
+          }
+        },
+        "claims": {
+          "$uid": {
+            ".write": "auth != null && auth.uid == $uid && root.child('rooms').child($roomId).child('players').child($uid).exists()",
+            ".validate": "newData.hasChild('at')"
+          }
+        },
+        "chat": {
+          "$messageId": {
+            ".write": "auth != null && root.child('rooms').child($roomId).child('players').child(auth.uid).exists() && newData.child('uid').val() == auth.uid && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 180"
+          }
+        }
+      }
+    }
+  }
+}

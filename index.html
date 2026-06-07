@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aurum Casino - Virtual Multiplayer Casino</title>
+  <meta name="description" content="A multiplayer virtual casino using Firebase Realtime Database and virtual credits only.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top casino-nav">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#dashboard">Aurum Casino</a>
+      <div class="d-flex align-items-center gap-2 order-lg-2">
+        <span class="badge rounded-pill text-bg-warning text-dark">Virtual Credits Only</span>
+        <button id="logoutBtn" class="btn btn-sm btn-outline-gold d-none">Logout</button>
+      </div>
+      <button class="navbar-toggler" type="button" aria-label="Toggle navigation" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul id="navLinks" class="navbar-nav ms-auto me-lg-3 d-none">
+          <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="#lobby">Lobby</a></li>
+          <li class="nav-item"><a class="nav-link" href="#bank">Bank</a></li>
+          <li class="nav-item"><a class="nav-link" href="#profile">Profile</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="app-shell">
+    <section id="authView" class="container py-4 py-md-5">
+      <div class="row min-vh-75 align-items-center g-4">
+        <div class="col-lg-6">
+          <div class="hero-copy">
+            <p class="eyebrow">No Real Money Gambling</p>
+            <h1>A premium multiplayer casino for virtual credits.</h1>
+            <p class="lead text-white-50">Create rooms, challenge friends, chat live, and compete on leaderboards with synchronized Firebase gameplay.</p>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+              <span class="chip pulse">+1000</span>
+              <span class="chip">Blackjack</span>
+              <span class="chip">Roulette</span>
+              <span class="chip">Racing</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5 offset-lg-1">
+          <div class="panel auth-panel">
+            <ul class="nav nav-pills nav-fill mb-3" role="tablist">
+              <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#loginPane">Login</button></li>
+              <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#registerPane">Register</button></li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane fade show active" id="loginPane">
+              <form id="loginForm">
+                <label class="form-label">Email</label>
+                <input id="loginEmail" class="form-control mb-3" type="email" required autocomplete="email">
+                <label class="form-label">Password</label>
+                <input id="loginPassword" class="form-control mb-3" type="password" required autocomplete="current-password">
+                <button class="btn btn-gold w-100" type="submit">Login</button>
+              </form>
+              </div>
+              <div class="tab-pane fade" id="registerPane">
+              <form id="registerForm">
+                <label class="form-label">Username</label>
+                <input id="registerUsername" class="form-control mb-3" minlength="3" maxlength="20" required>
+                <label class="form-label">Email</label>
+                <input id="registerEmail" class="form-control mb-3" type="email" required autocomplete="email">
+                <label class="form-label">Password</label>
+                <input id="registerPassword" class="form-control mb-3" type="password" minlength="6" required autocomplete="new-password">
+                <label class="form-label">Avatar</label>
+                <select id="registerAvatar" class="form-select mb-3">
+                  <option value="dealer">Dealer</option>
+                  <option value="ace">Ace</option>
+                  <option value="queen">Queen</option>
+                  <option value="chip">Chip</option>
+                  <option value="star">Star</option>
+                </select>
+                <button class="btn btn-gold w-100" type="submit">Create Account</button>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="appView" class="d-none">
+      <div class="disclaimer-bar">
+        <div class="container d-flex flex-wrap gap-3 justify-content-center">
+          <strong>Virtual Credits Only</strong><span>No Real Money Gambling</span><span>Entertainment Platform</span>
+        </div>
+      </div>
+
+      <section id="dashboard" class="container py-4">
+        <div class="row g-3 align-items-stretch">
+          <div class="col-lg-8">
+            <div class="panel dashboard-hero">
+              <div>
+                <p class="eyebrow">Welcome back</p>
+                <h2 id="welcomeName">Player</h2>
+                <p class="text-white-50 mb-0">Join a public table, invite friends by room code, or warm up in single-player roulette.</p>
+              </div>
+              <div class="balance-orb">
+                <span>Balance</span>
+                <strong id="balanceText">0</strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-2"><div class="stat-card"><span>Wins</span><strong id="winsText">0</strong></div></div>
+          <div class="col-6 col-lg-2"><div class="stat-card"><span>Win Rate</span><strong id="winRateText">0%</strong></div></div>
+        </div>
+      </section>
+
+      <section id="lobby" class="container py-4">
+        <div class="row g-4">
+          <div class="col-xl-8">
+            <div class="panel mb-4">
+              <div class="d-flex flex-wrap justify-content-between gap-2 align-items-center mb-3">
+                <h3 class="section-title mb-0">Lobby</h3>
+                <button class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#createRoomModal">Create Room</button>
+              </div>
+              <div class="input-group mb-3">
+                <label class="visually-hidden" for="roomCodeInput">Private room code</label>
+                <input id="roomCodeInput" class="form-control" placeholder="Private room code">
+                <button id="joinCodeBtn" class="btn btn-outline-gold">Join</button>
+              </div>
+              <div id="roomsList" class="room-grid"></div>
+            </div>
+            <div id="roomPanel" class="panel d-none">
+              <div class="d-flex flex-wrap justify-content-between gap-2 align-items-start mb-3">
+                <div>
+                  <h3 id="roomTitle" class="section-title mb-1">Room</h3>
+                  <p id="roomMeta" class="text-white-50 mb-0"></p>
+                </div>
+                <div class="d-flex gap-2">
+                  <button id="readyBtn" class="btn btn-outline-gold">Ready</button>
+                  <button id="startGameBtn" class="btn btn-gold">Start</button>
+                  <button id="leaveRoomBtn" class="btn btn-outline-light">Leave</button>
+                </div>
+              </div>
+              <div id="playersList" class="players-list mb-3"></div>
+              <div id="gameMount" class="game-stage"></div>
+              <div class="chat-box mt-3">
+                <div id="chatMessages" class="chat-messages"></div>
+                <form id="chatForm" class="input-group">
+                  <label class="visually-hidden" for="chatInput">Room chat message</label>
+                  <input id="chatInput" class="form-control" maxlength="180" placeholder="Message room">
+                  <button class="btn btn-outline-gold" type="submit">Send</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-4">
+            <div class="panel mb-4">
+              <h3 class="section-title">Online Players</h3>
+              <div id="onlinePlayers" class="side-list"></div>
+            </div>
+            <div class="panel">
+              <h3 class="section-title">Leaderboard</h3>
+              <div class="leader-tabs btn-group w-100 mb-3">
+                <button class="btn btn-sm btn-outline-gold active" data-board="richest">Richest</button>
+                <button class="btn btn-sm btn-outline-gold" data-board="wins">Wins</button>
+                <button class="btn btn-sm btn-outline-gold" data-board="rate">Rate</button>
+              </div>
+              <div id="leaderboard" class="side-list"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="bank" class="container py-4">
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <div class="panel">
+              <h3 class="section-title">Virtual Bank</h3>
+              <p class="text-white-50">Simulated credits only. No purchases, cash outs, crypto, or real money.</p>
+              <div class="amount-grid mb-3">
+                <button class="btn btn-gold bank-deposit" data-amount="100">+100</button>
+                <button class="btn btn-gold bank-deposit" data-amount="500">+500</button>
+                <button class="btn btn-gold bank-deposit" data-amount="1000">+1000</button>
+                <button class="btn btn-gold bank-deposit" data-amount="5000">+5000</button>
+                <button class="btn btn-gold bank-deposit" data-amount="10000">+10000</button>
+              </div>
+              <form id="withdrawForm" class="input-group">
+                <label class="visually-hidden" for="withdrawAmount">Withdraw amount</label>
+                <input id="withdrawAmount" class="form-control" type="number" min="1" step="1" placeholder="Withdraw credits">
+                <button class="btn btn-outline-gold" type="submit">Withdraw</button>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="panel">
+              <h3 class="section-title">Transactions</h3>
+              <div id="transactionHistory" class="history-list"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="profile" class="container py-4 pb-5">
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="panel text-center">
+              <div id="profileAvatar" class="avatar-xl mx-auto mb-3"></div>
+              <h3 id="profileName">Player</h3>
+              <form id="profileForm" class="mt-3">
+                <label class="visually-hidden" for="profileUsername">Profile username</label>
+                <input id="profileUsername" class="form-control mb-2" minlength="3" maxlength="20">
+                <label class="visually-hidden" for="profileAvatarSelect">Profile avatar</label>
+                <select id="profileAvatarSelect" class="form-select mb-2">
+                  <option value="dealer">Dealer</option><option value="ace">Ace</option><option value="queen">Queen</option><option value="chip">Chip</option><option value="star">Star</option>
+                </select>
+                <button class="btn btn-outline-gold w-100" type="submit">Save Profile</button>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="panel">
+              <h3 class="section-title">Match History</h3>
+              <div id="matchHistory" class="history-list"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="modal fade" id="createRoomModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <form id="createRoomForm" class="modal-content casino-modal">
+        <div class="modal-header">
+          <h5 class="modal-title">Create Room</h5>
+          <button type="button" class="btn-close btn-close-white" aria-label="Close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">Game</label>
+          <select id="roomGameType" class="form-select mb-3">
+            <option value="blackjack">Blackjack Duel</option>
+            <option value="dice">Dice Duel</option>
+            <option value="coinflip">Coin Flip Duel</option>
+            <option value="highcard">High Card Duel</option>
+            <option value="horserace">Horse Racing Arena</option>
+            <option value="roulette">Roulette</option>
+          </select>
+          <label class="form-label">Bet Amount</label>
+          <input id="roomBet" class="form-control mb-3" type="number" min="10" step="10" value="100">
+          <label class="form-label">Max Players</label>
+          <input id="roomMaxPlayers" class="form-control mb-3" type="number" min="1" max="4" value="2">
+          <div class="form-check form-switch">
+            <input id="roomPrivate" class="form-check-input" type="checkbox">
+            <label class="form-check-label">Private room</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-gold" type="submit">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastHost"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

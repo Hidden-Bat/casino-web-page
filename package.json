@@ -1,0 +1,9 @@
+{
+  "name": "aurum-casino",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check assets/js/app.js && node --check assets/js/auth.js && node --check assets/js/firebase.js && node --check assets/js/lobby.js && node --check assets/js/rooms.js && node --check assets/js/profile.js && node --check assets/js/chat.js && node --check assets/js/games/blackjack.js && node --check assets/js/games/dice.js && node --check assets/js/games/coinflip.js && node --check assets/js/games/highcard.js && node --check assets/js/games/horserace.js && node --check assets/js/games/roulette.js"
+  }
+}
