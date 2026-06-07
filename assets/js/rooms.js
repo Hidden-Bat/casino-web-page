@@ -285,15 +285,19 @@ async function refundEscrow(uid, amount, note) {
 }
 
 function playerPayload(host) {
+  const username =
+    state.profile?.username ||
+    auth.currentUser?.email?.split("@")[0] ||
+    "Player";
+
   return {
     uid: auth.currentUser.uid,
-    username: state.profile.username,
-    avatar: state.profile.avatar || "dealer",
+    username,
+    avatar: state.profile?.avatar || "dealer",
     ready: host,
     joinedAt: Date.now()
   };
 }
-
 function syncRoomSettingControls() {
   const gameType = $("roomGameType").value;
   const limits = limitsFor(gameType);
