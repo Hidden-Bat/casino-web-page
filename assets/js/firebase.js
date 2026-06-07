@@ -26,17 +26,12 @@ import {
 const firebaseConfig = {
 
   apiKey: "AIzaSyA4CkPF84V-aoVZEgp40BNPrmMI8wKaDJA",
-
   authDomain: "casino-web-page.firebaseapp.com",
-
+  databaseURL: "https://console.firebase.google.com/u/0/project/casino-web-page/database/casino-web-page-default-rtdb/data/~2F?utm_source=chatgpt.com",
   projectId: "casino-web-page",
-
   storageBucket: "casino-web-page.firebasestorage.app",
-
   messagingSenderId: "634053798802",
-
   appId: "1:634053798802:web:b76164e9cc545522eb2f4b",
-
   measurementId: "G-E77BN39Y7T"
 
 };
