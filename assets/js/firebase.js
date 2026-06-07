@@ -27,7 +27,7 @@ const firebaseConfig = {
 
   apiKey: "AIzaSyA4CkPF84V-aoVZEgp40BNPrmMI8wKaDJA",
   authDomain: "casino-web-page.firebaseapp.com",
-  databaseURL: "https://casino-web-page-default-rtdb.firebaseio.com",
+  databaseURL: "https://casino-web-page-default-rtdb.firebaseio.com/",
   projectId: "casino-web-page",
   storageBucket: "casino-web-page.firebasestorage.app",
   messagingSenderId: "634053798802",
