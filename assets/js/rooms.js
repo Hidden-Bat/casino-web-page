@@ -61,16 +61,21 @@ async function createRoom(e) {
   if (!(await escrowBet(uid, bet, "room escrow"))) return;
 
   const id = await uniqueCode();
+  const username =
+    state.profile?.username ||
+    auth.currentUser?.email?.split("@")[0] ||
+    "Player";
+  
   const room = {
     id,
     code: id,
-    name: `${state.profile.username}'s Table`,
+    name: `${username}'s Table`,
     gameType,
     bet,
     maxPlayers,
     private: $("roomPrivate").checked,
     hostId: uid,
-    hostName: state.profile.username,
+    hostName: username,
     status: "waiting",
     createdAt: serverTimestamp(),
     pot: bet,
